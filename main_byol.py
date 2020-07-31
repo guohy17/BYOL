@@ -37,8 +37,8 @@ def train(args, model, optimizer, path, train_loader):
             print("Epoch [{}/{}] : Loss {:.4f}  Time {:.2f}".format(epoch + 1, args.num_epochs, print_loss, epoch_time))
             logfile(path, epoch + 1, args.num_epochs, print_loss)
 
-        if (epoch + 1) % 10 == 0:
-            save_model(os.path.join(path, 'model-{}.pth').format(epoch + 1))
+            if (epoch + 1) % 10 == 0:
+                save_model(os.path.join(path, 'model-{}.pth').format(epoch + 1))
 
 
 
