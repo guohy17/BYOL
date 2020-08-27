@@ -44,11 +44,11 @@ def get_dataset(dataset):
         train_dataset = SVHNpair(root = '/lustre/home/hyguo/code/data/', split='train', download=False, transform=transform_train)
         supervised_dataset = torchvision.datasets.SVHN(root='/lustre/home/hyguo/code/data/', split='train', download=False, transform=transform_test)
         test_dataset = torchvision.datasets.SVHN(root='/lustre/home/hyguo/code/data/', split='test', download=True, transform=transform_test)
-    else:
-        transform_train = trans_stl()
+    elif dataset == 'Imagenet':
+        transform_train = trans_imagenet()
         transform_test = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.4313, 0.4156, 0.3663), (0.2683, 0.2610, 0.2687)),
+            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
         ])
 
         train_dataset = ImagePair(root='/lustre/home/hyguo/code/data/Imagenet/train/',  transform=transform_train)
@@ -166,6 +166,21 @@ def trans_stl():
     trans.append(gaussian_blur)
     trans.append(transforms.ToTensor())
     trans.append(transforms.Normalize((0.4313, 0.4156, 0.3663), (0.2683, 0.2610, 0.2687)))
+    trans = transforms.Compose(trans)
+    return trans
+
+
+def trans_imagenet():
+    trans = []
+    # trans.append(transforms.RandomResizedCrop(96))
+    trans.append(transforms.RandomResizedCrop(224, scale=(0.2, 1.0)))
+    trans.append(transforms.RandomHorizontalFlip(p=0.5))
+    color_dis = get_color_distortion(s=0.5)
+    trans.append(color_dis)
+    gaussian_blur = Gaussian_blur(kernel=9)
+    trans.append(gaussian_blur)
+    trans.append(transforms.ToTensor())
+    trans.append(transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)))
     trans = transforms.Compose(trans)
     return trans
 
